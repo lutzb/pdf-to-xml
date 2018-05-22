@@ -14,6 +14,7 @@ import com.dto.workerscomp.Address;
 import com.dto.workerscomp.BillingAuditInfo;
 import com.dto.workerscomp.CommercialBusiness;
 import com.dto.workerscomp.ContactInfo;
+import com.dto.workerscomp.IncludedExcluded;
 import com.dto.workerscomp.Location;
 import com.dto.workerscomp.Policy;
 import com.dto.workerscomp.Producer;
@@ -34,6 +35,7 @@ public class PDFToDTOMapper {
 		result.setLocations(buildLocations(dataMap));
 		result.setPolicy(buildPolicy(dataMap));
 		result.setContactInfo(buildContactInfo(dataMap));
+		result.setIncludedExcluded(buildIncludedExcludedAlphabet(dataMap));
 		
 		return result;
 	}
@@ -95,7 +97,7 @@ public class PDFToDTOMapper {
 		mailingAddress.setPostalCode(dataMap.get("NamedInsured_MailingAddress_PostalCode_A"));
 		commercialBusiness.setMailingAddress(mailingAddress);
 		
-		commercialBusiness.setYrsInBusiness(Integer.parseInt(dataMap.get("NamedInsured_InBusinessYearCount_A")));
+		commercialBusiness.setYrsInBusiness(DataHelper.parseInt(dataMap.get("NamedInsured_InBusinessYearCount_A")));
 		commercialBusiness.setSicCode(dataMap.get("NamedInsured_SICCode_A"));
 		commercialBusiness.setNaicsCode(dataMap.get("NamedInsured_NAICSCode_A"));
 		commercialBusiness.setWebsiteAddress(dataMap.get("NamedInsured_Primary_WebsiteAddress_A"));
@@ -113,9 +115,9 @@ public class PDFToDTOMapper {
 		
 		commercialBusiness.setCreditBureauName(dataMap.get("NamedInsured_CreditBureauName_A"));
 		commercialBusiness.setCreditBureauID(dataMap.get("NamedInsured_CreditBureauIdentifier_A"));
-		commercialBusiness.setTaxIdentifier(Integer.parseInt(dataMap.get("NamedInsured_TaxIdentifier_A")));
+		commercialBusiness.setTaxIdentifier(DataHelper.parseInt(dataMap.get("NamedInsured_TaxIdentifier_A")));
 		commercialBusiness.setNcciRiskID(dataMap.get("NamedInsured_NCCIRiskIdentifier_A"));
-		commercialBusiness.setRatingBureauID(Integer.parseInt(dataMap.get("NamedInsured_RatingBureauIdentifier_A")));
+		commercialBusiness.setRatingBureauID(DataHelper.parseInt(dataMap.get("NamedInsured_RatingBureauIdentifier_A")));
 		
 		return commercialBusiness;
 	}
@@ -147,7 +149,7 @@ public class PDFToDTOMapper {
 		List<Location> locations = new ArrayList<Location>();
 		
 		Location location1 = new Location();
-		location1.setLocationNumber(Integer.parseInt(dataMap.get("Location_ProducerIdentifier_A")));
+		location1.setLocationNumber(DataHelper.parseInt(dataMap.get("Location_ProducerIdentifier_A")));
 		location1.setHighestFloor(dataMap.get("Location_HighestFloorCount_A"));
 		
 		Address location1Address = new Address();
@@ -177,14 +179,14 @@ public class PDFToDTOMapper {
 		policy.setOtherStatesIns(dataMap.get("WorkersCompensation_PartThree_StateOrProvinceCode_A"));
 		policy.setDeductiblesMedical(DataHelper.checkbox.get(dataMap.get("WorkersCompensation_DeductibleType_MedicalIndicator_A")));
 		policy.setDeductiblesIndemnity(DataHelper.checkbox.get(dataMap.get("WorkersCompensation_DeductibleType_IndemnityIndicator_A")));
-		policy.setDeductibleAmount(Integer.parseInt(dataMap.get("WorkersCompensation_DeductibleAmount_A")));
+		policy.setDeductibleAmount(DataHelper.parseInt(dataMap.get("WorkersCompensation_DeductibleAmount_A")));
 		policy.setOtherCoveragesUSLH(DataHelper.checkbox.get(dataMap.get("WorkersCompensation_Coverage_USLHIndicator_A")));
 		policy.setOtherCoveragesVoluntaryComp(DataHelper.checkbox.get(dataMap.get("WorkersCompensation_Coverage_VoluntaryCompensationIndicator_A")));
 		policy.setOtherCoveragesForeignCov(DataHelper.checkbox.get(dataMap.get("WorkersCompensation_Coverage_ForeignCoverageIndicator_A")));
 		policy.setOtherCoveragesManagedCare(DataHelper.checkbox.get(dataMap.get("WorkersCompensation_Coverage_ManagedCareOptionIndicator_A")));
-		policy.setTotalEstimatedAnnualPremium(Integer.parseInt(dataMap.get("WorkersCompensationLineOfBusiness_TotalEstimatedAnnualPremiumAllStatesAmount_A")));
-		policy.setTotalMinimumPremium(Integer.parseInt(dataMap.get("WorkersCompensationLineOfBusiness_TotalMinimumPremiumAllStatesAmount_A")));
-		policy.setTotalDepositPremium(Integer.parseInt(dataMap.get("WorkersCompensationLineOfBusiness_TotalDepositPremiumAllStatesAmount_A")));
+		policy.setTotalEstimatedAnnualPremium(DataHelper.parseInt(dataMap.get("WorkersCompensationLineOfBusiness_TotalEstimatedAnnualPremiumAllStatesAmount_A")));
+		policy.setTotalMinimumPremium(DataHelper.parseInt(dataMap.get("WorkersCompensationLineOfBusiness_TotalMinimumPremiumAllStatesAmount_A")));
+		policy.setTotalDepositPremium(DataHelper.parseInt(dataMap.get("WorkersCompensationLineOfBusiness_TotalDepositPremiumAllStatesAmount_A")));
 		
 		return policy;
 	}
@@ -217,5 +219,31 @@ public class PDFToDTOMapper {
 		contactInfoList.add(accounting);
 		contactInfoList.add(claims);
 		return contactInfoList;
+	}
+
+	private static List<IncludedExcluded> buildIncludedExcludedAlphabet(Map<String, String> dataMap) {
+		List<IncludedExcluded> includedExcluded = new ArrayList<IncludedExcluded>();
+		List<String> alphabets = new ArrayList<String>();
+		alphabets.add("A");
+		alphabets.add("B");
+		alphabets.add("C");
+		alphabets.add("D");
+		
+		for (String character : alphabets) {
+			IncludedExcluded individual = new IncludedExcluded();
+			individual.setState(dataMap.get("WorkersCompensation_Individual_StateOrProvinceCode_" + character));
+			individual.setLocationNumber(DataHelper.parseInt(dataMap.get("WorkersCompensation_Individual_LocationProducerIdentifier_" + character)));
+			individual.setName(dataMap.get("WorkersCompensation_Individual_FullName_" + character));
+			individual.setDateOfBirth(dataMap.get("WorkersCompensation_Individual_BirthDate_" + character));
+			individual.setTitle(dataMap.get("WorkersCompensation_Individual_TitleRelationshipCode_" + character));
+			individual.setOwnershipPercent(DataHelper.parseInt(dataMap.get("WorkersCompensation_Individual_OwnershipPercent_" + character)));
+			individual.setDuties(dataMap.get("WorkersCompensation_Individual_DutiesDescription_" + character));
+			individual.setIncludeExclude(dataMap.get("WorkersCompensation_Individual_IncludedExcludedCode_" + character));
+			individual.setClassCode(dataMap.get("WorkersCompensation_Individual_RatingClassificationCode_" + character));
+			individual.setRemunerationPayroll(dataMap.get("WorkersCompensation_Individual_RemunerationAmount_" + character));
+			includedExcluded.add(individual);
+		}
+
+		return includedExcluded;
 	}
 }

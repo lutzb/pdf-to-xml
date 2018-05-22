@@ -12,7 +12,7 @@ public class Acord130DTO {
 	private List<Location> locations;
 	private Policy policy;
 	private List<ContactInfo> contactInfo;
-	private List<IncludeExclude> includedExcluded;
+	private List<IncludedExcluded> includedExcluded;
 
 	public String getCompletionDate() {
 		return completionDate;
@@ -78,11 +78,11 @@ public class Acord130DTO {
 		this.contactInfo = contactInfo;
 	}
 
-	public List<IncludeExclude> getIncludedExcluded() {
+	public List<IncludedExcluded> getIncludedExcluded() {
 		return includedExcluded;
 	}
 
-	public void setIncludedExcluded(List<IncludeExclude> includedExcluded) {
+	public void setIncludedExcluded(List<IncludedExcluded> includedExcluded) {
 		this.includedExcluded = includedExcluded;
 	}
 

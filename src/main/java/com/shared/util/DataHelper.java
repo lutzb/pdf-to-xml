@@ -12,5 +12,9 @@ public class DataHelper {
 		checkbox.put("1", true);
 		checkbox.put("", false);
 	}
+	
+	public static int parseInt(String value) {
+		return (value != null && ! value.isEmpty()) ? Integer.parseInt(value) : 0;
+	}
 
 }
