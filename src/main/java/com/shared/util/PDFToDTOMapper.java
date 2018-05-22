@@ -147,19 +147,25 @@ public class PDFToDTOMapper {
 
 	private static List<Location> buildLocations(Map<String, String> dataMap) {
 		List<Location> locations = new ArrayList<Location>();
+		List<String> rowIdentifiers = new ArrayList<String>();
+		rowIdentifiers.add("A");
+		rowIdentifiers.add("B");
+		rowIdentifiers.add("C");
 		
-		Location location1 = new Location();
-		location1.setLocationNumber(DataHelper.parseInt(dataMap.get("Location_ProducerIdentifier_A")));
-		location1.setHighestFloor(dataMap.get("Location_HighestFloorCount_A"));
-		
-		Address location1Address = new Address();
-		location1Address.setLineOne(dataMap.get("Location_PhysicalAddress_LineOne_A"));
-		location1Address.setCity(dataMap.get("Location_PhysicalAddress_CityName_A"));
-		location1Address.setStateOrProvinceCode(dataMap.get("Location_PhysicalAddress_StateOrProvinceCode_A"));
-		location1Address.setPostalCode(dataMap.get("Location_PhysicalAddress_PostalCode_A"));
-		
-		locations.add(location1);
-		
+		for (String rowIdentifier : rowIdentifiers) {
+			Location location = new Location();
+			location.setLocationNumber(DataHelper.parseInt(dataMap.get("Location_ProducerIdentifier_" + rowIdentifier)));
+			location.setHighestFloor(dataMap.get("Location_HighestFloorCount_" + rowIdentifier));
+			
+			Address locationAddress = new Address();
+			locationAddress.setLineOne(dataMap.get("Location_PhysicalAddress_LineOne_" + rowIdentifier));
+			locationAddress.setCity(dataMap.get("Location_PhysicalAddress_CityName_" + rowIdentifier));
+			locationAddress.setStateOrProvinceCode(dataMap.get("Location_PhysicalAddress_StateOrProvinceCode_" + rowIdentifier));
+			locationAddress.setPostalCode(dataMap.get("Location_PhysicalAddress_PostalCode_" + rowIdentifier));
+			
+			locations.add(location);
+		}
+
 		return locations;
 	}
 
@@ -223,24 +229,24 @@ public class PDFToDTOMapper {
 
 	private static List<IncludedExcluded> buildIncludedExcludedAlphabet(Map<String, String> dataMap) {
 		List<IncludedExcluded> includedExcluded = new ArrayList<IncludedExcluded>();
-		List<String> alphabets = new ArrayList<String>();
-		alphabets.add("A");
-		alphabets.add("B");
-		alphabets.add("C");
-		alphabets.add("D");
+		List<String> rowIdentifiers = new ArrayList<String>();
+		rowIdentifiers.add("A");
+		rowIdentifiers.add("B");
+		rowIdentifiers.add("C");
+		rowIdentifiers.add("D");
 		
-		for (String character : alphabets) {
+		for (String rowIdentifier : rowIdentifiers) {
 			IncludedExcluded individual = new IncludedExcluded();
-			individual.setState(dataMap.get("WorkersCompensation_Individual_StateOrProvinceCode_" + character));
-			individual.setLocationNumber(DataHelper.parseInt(dataMap.get("WorkersCompensation_Individual_LocationProducerIdentifier_" + character)));
-			individual.setName(dataMap.get("WorkersCompensation_Individual_FullName_" + character));
-			individual.setDateOfBirth(dataMap.get("WorkersCompensation_Individual_BirthDate_" + character));
-			individual.setTitle(dataMap.get("WorkersCompensation_Individual_TitleRelationshipCode_" + character));
-			individual.setOwnershipPercent(DataHelper.parseInt(dataMap.get("WorkersCompensation_Individual_OwnershipPercent_" + character)));
-			individual.setDuties(dataMap.get("WorkersCompensation_Individual_DutiesDescription_" + character));
-			individual.setIncludeExclude(dataMap.get("WorkersCompensation_Individual_IncludedExcludedCode_" + character));
-			individual.setClassCode(dataMap.get("WorkersCompensation_Individual_RatingClassificationCode_" + character));
-			individual.setRemunerationPayroll(dataMap.get("WorkersCompensation_Individual_RemunerationAmount_" + character));
+			individual.setState(dataMap.get("WorkersCompensation_Individual_StateOrProvinceCode_" + rowIdentifier));
+			individual.setLocationNumber(DataHelper.parseInt(dataMap.get("WorkersCompensation_Individual_LocationProducerIdentifier_" + rowIdentifier)));
+			individual.setName(dataMap.get("WorkersCompensation_Individual_FullName_" + rowIdentifier));
+			individual.setDateOfBirth(dataMap.get("WorkersCompensation_Individual_BirthDate_" + rowIdentifier));
+			individual.setTitle(dataMap.get("WorkersCompensation_Individual_TitleRelationshipCode_" + rowIdentifier));
+			individual.setOwnershipPercent(DataHelper.parseInt(dataMap.get("WorkersCompensation_Individual_OwnershipPercent_" + rowIdentifier)));
+			individual.setDuties(dataMap.get("WorkersCompensation_Individual_DutiesDescription_" + rowIdentifier));
+			individual.setIncludeExclude(dataMap.get("WorkersCompensation_Individual_IncludedExcludedCode_" + rowIdentifier));
+			individual.setClassCode(dataMap.get("WorkersCompensation_Individual_RatingClassificationCode_" + rowIdentifier));
+			individual.setRemunerationPayroll(dataMap.get("WorkersCompensation_Individual_RemunerationAmount_" + rowIdentifier));
 			includedExcluded.add(individual);
 		}
 
