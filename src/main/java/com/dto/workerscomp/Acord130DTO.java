@@ -15,6 +15,7 @@ public class Acord130DTO {
 	private List<IncludedExcluded> includedExcluded;
 	private List<StateRatingInfo> stateRatingInfo;
 	private Premium premium;
+	private String remarkText;
 
 	public String getCompletionDate() {
 		return completionDate;
@@ -102,6 +103,14 @@ public class Acord130DTO {
 
 	public void setPremium(Premium premium) {
 		this.premium = premium;
+	}
+
+	public String getRemarkText() {
+		return remarkText;
+	}
+
+	public void setRemarkText(String remarkText) {
+		this.remarkText = remarkText;
 	}
 
 }

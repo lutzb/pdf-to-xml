@@ -40,6 +40,7 @@ public class PDFToDTOMapper {
 		result.setIncludedExcluded(buildIncludedExcludedAlphabet(dataMap));
 		result.setStateRatingInfo(buildStateRatingInfo(dataMap));
 		result.setPremium(buildPremium(dataMap));
+		result.setRemarkText(dataMap.get("WorkersCompensation_RateState_RemarkText_A"));
 		
 		return result;
 	}
@@ -298,6 +299,31 @@ public class PDFToDTOMapper {
 	
 	private static Premium buildPremium(Map<String, String> dataMap) {
 		Premium premium = new Premium();
+		
+		premium.setTotalPremium(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_TotalFactoredPremiumAmount_A")));
+		premium.setIncreasedLimitsFactor(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_IncreasedLimits_ModificationFactor_A")));
+		premium.setIncreasedLimitsPremium(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_IncreasedLimits_FactoredPremiumAmount_A")));
+		premium.setDeductibleFactor(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_Deductible_ModificationFactor_A")));
+		premium.setDeductiblePremium(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_Deductible_FactoredPremiumAmount_A")));
+		premium.setExperienceOrMeritFactor(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_ExperienceOrMerit_ModificationFactor_A")));
+		premium.setExperienceOrMeritPremium(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_ExperienceOrMerit_FactoredPremiumAmount_A")));
+		premium.setAssignedRiskSurchargeFactor(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_AssignedRiskSurcharge_ModificationFactor_A")));
+		premium.setAssignedRiskSurchargePremium(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_AssignedRiskSurcharge_FactoredPremiumAmount_A")));
+		premium.setAssignedRiskAdditionalFactor(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_AssignedRiskAdditionalPremium_ModificationFactor_A")));
+		premium.setAssignedRiskAdditionalPremium(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_AssignedRiskAdditionalPremium_FactoredPremiumAmount_A")));
+		premium.setScheduleRatingFactor(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_ScheduleRating_ModificationFactor_A")));
+		premium.setScheduleRatingPremium(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_ScheduleRating_FactoredPremiumAmount_A")));
+		premium.setCcpapFactor(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_ContractingClassPremiumAdjustmentProgram_ModificationFactor_A")));
+		premium.setCcpapPremium(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_ContractingClassPremiumAdjustmentProgram_FactoredPremiumAmount_A")));
+		premium.setStandardPremiumFactor(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_StandardPremium_ModificationFactor_A")));
+		premium.setStandardPremiumPremium(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_StandardPremium_FactoredPremiumAmount_A")));
+		premium.setPremiumDiscountFactor(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_PremiumDiscount_ModificationFactor_A")));
+		premium.setPremiumDiscountPremium(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_PremiumDiscount_FactoredPremiumAmount_A")));
+		premium.setExpenseConstantPremium(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_ExpenseConstant_PremiumAmount_A")));
+		premium.setTaxesAssessmentsPremium(DataHelper.parseInt(dataMap.get("WorkersCompensationStateCoverage_TaxesFeeAssessment_PremiumAmount_A")));
+		premium.setTotalEstimatedAnnualPremium(DataHelper.parseInt(dataMap.get("WorkersCompensation_RateState_TotalEstimatedAnnualPremiumAmount_A")));
+		premium.setMinimumPremium(DataHelper.parseInt(dataMap.get("WorkersCompensation_RateState_MinimumPremiumAmount_A")));
+		premium.setDepositPremium(DataHelper.parseInt(dataMap.get("WorkersCompensation_RateState_DepositPremiumAmount_A")));
 		
 		return premium;
 	}
