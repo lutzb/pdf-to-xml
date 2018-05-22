@@ -18,6 +18,7 @@ import com.dto.workerscomp.IncludedExcluded;
 import com.dto.workerscomp.Location;
 import com.dto.workerscomp.Policy;
 import com.dto.workerscomp.Premium;
+import com.dto.workerscomp.PriorCarrierLossInfo;
 import com.dto.workerscomp.Producer;
 import com.dto.workerscomp.StateRatingInfo;
 import com.dto.workerscomp.SubmissionStatus;
@@ -41,6 +42,8 @@ public class PDFToDTOMapper {
 		result.setStateRatingInfo(buildStateRatingInfo(dataMap));
 		result.setPremium(buildPremium(dataMap));
 		result.setRemarkText(dataMap.get("WorkersCompensation_RateState_RemarkText_A"));
+		result.setPriorCarrierLossInfo(buildPriorCarrierLossInfo(dataMap));
+		result.setBusinessOperationsDescription(dataMap.get("CommercialPolicy_OperationsDescription_A"));
 		
 		return result;
 	}
@@ -326,5 +329,30 @@ public class PDFToDTOMapper {
 		premium.setDepositPremium(DataHelper.parseInt(dataMap.get("WorkersCompensation_RateState_DepositPremiumAmount_A")));
 		
 		return premium;
+	}
+	
+	private static List<PriorCarrierLossInfo> buildPriorCarrierLossInfo(Map<String, String> dataMap) {
+		List<PriorCarrierLossInfo> priorCarrierLossInfo = new ArrayList<PriorCarrierLossInfo>();
+		List<String> rowIdentifiers = new ArrayList<String>();
+		rowIdentifiers.add("A");
+		rowIdentifiers.add("B");
+		rowIdentifiers.add("C");
+		rowIdentifiers.add("D");
+		rowIdentifiers.add("E");
+		
+		for (String rowIdentifier : rowIdentifiers) {
+			PriorCarrierLossInfo priorCarrier = new PriorCarrierLossInfo();
+			priorCarrier.setYear(dataMap.get("WorkersCompensation_RateClass_DescriptionCode_" + rowIdentifier));
+			priorCarrier.setCarrierName(dataMap.get("WorkersCompensation_RateClass_DescriptionCode_" + rowIdentifier));
+			priorCarrier.setPolicyNumber(dataMap.get("WorkersCompensation_RateClass_DescriptionCode_" + rowIdentifier));
+			priorCarrier.setAnnualPremium(dataMap.get("WorkersCompensation_RateClass_DescriptionCode_" + rowIdentifier));
+			priorCarrier.setModificationFactor(dataMap.get("WorkersCompensation_RateClass_DescriptionCode_" + rowIdentifier));
+			priorCarrier.setClaimCount(DataHelper.parseInt(dataMap.get("WorkersCompensation_RateClass_DescriptionCode_" + rowIdentifier)));
+			priorCarrier.setAmountPaid(dataMap.get("WorkersCompensation_RateClass_DescriptionCode_" + rowIdentifier));
+			priorCarrier.setReserve(dataMap.get("WorkersCompensation_RateClass_DescriptionCode_" + rowIdentifier));
+			priorCarrierLossInfo.add(priorCarrier);
+		}
+		
+		return priorCarrierLossInfo;
 	}
 }

@@ -16,7 +16,10 @@ public class Acord130DTO {
 	private List<StateRatingInfo> stateRatingInfo;
 	private Premium premium;
 	private String remarkText;
-
+	private List<PriorCarrierLossInfo> priorCarrierLossInfo;
+	private String businessOperationsDescription;
+	private GeneralInfoQuestions generalInfoQuestions;
+	
 	public String getCompletionDate() {
 		return completionDate;
 	}
@@ -111,6 +114,30 @@ public class Acord130DTO {
 
 	public void setRemarkText(String remarkText) {
 		this.remarkText = remarkText;
+	}
+
+	public List<PriorCarrierLossInfo> getPriorCarrierLossInfo() {
+		return priorCarrierLossInfo;
+	}
+
+	public void setPriorCarrierLossInfo(List<PriorCarrierLossInfo> priorCarrierLossInfo) {
+		this.priorCarrierLossInfo = priorCarrierLossInfo;
+	}
+
+	public String getBusinessOperationsDescription() {
+		return businessOperationsDescription;
+	}
+
+	public void setBusinessOperationsDescription(String businessOperationsDescription) {
+		this.businessOperationsDescription = businessOperationsDescription;
+	}
+
+	public GeneralInfoQuestions getGeneralInfoQuestions() {
+		return generalInfoQuestions;
+	}
+
+	public void setGeneralInfoQuestions(GeneralInfoQuestions generalInfoQuestions) {
+		this.generalInfoQuestions = generalInfoQuestions;
 	}
 
 }
