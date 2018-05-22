@@ -17,7 +17,9 @@ import com.dto.workerscomp.ContactInfo;
 import com.dto.workerscomp.IncludedExcluded;
 import com.dto.workerscomp.Location;
 import com.dto.workerscomp.Policy;
+import com.dto.workerscomp.Premium;
 import com.dto.workerscomp.Producer;
+import com.dto.workerscomp.StateRatingInfo;
 import com.dto.workerscomp.SubmissionStatus;
 
 public class PDFToDTOMapper {
@@ -36,6 +38,8 @@ public class PDFToDTOMapper {
 		result.setPolicy(buildPolicy(dataMap));
 		result.setContactInfo(buildContactInfo(dataMap));
 		result.setIncludedExcluded(buildIncludedExcludedAlphabet(dataMap));
+		result.setStateRatingInfo(buildStateRatingInfo(dataMap));
+		result.setPremium(buildPremium(dataMap));
 		
 		return result;
 	}
@@ -251,5 +255,50 @@ public class PDFToDTOMapper {
 		}
 
 		return includedExcluded;
+	}
+	
+	private static List<StateRatingInfo> buildStateRatingInfo(Map<String, String> dataMap) {
+		List<StateRatingInfo> stateRatingInfo = new ArrayList<StateRatingInfo>();
+		List<String> rowIdentifiers = new ArrayList<String>();
+		rowIdentifiers.add("A");
+		rowIdentifiers.add("B");
+		rowIdentifiers.add("C");
+		rowIdentifiers.add("D");
+		rowIdentifiers.add("E");
+		rowIdentifiers.add("F");
+		rowIdentifiers.add("G");
+		rowIdentifiers.add("H");
+		rowIdentifiers.add("I");
+		rowIdentifiers.add("J");
+		rowIdentifiers.add("K");
+		rowIdentifiers.add("L");
+		rowIdentifiers.add("M");
+		rowIdentifiers.add("N");
+		
+		for (String rowIdentifier : rowIdentifiers) {
+			StateRatingInfo ratingInfo = new StateRatingInfo();
+			
+			ratingInfo.setLocationNumber(DataHelper.parseInt(dataMap.get("WorkersCompensation_RateClass_LocationProducerIdentifier_" + rowIdentifier)));
+			ratingInfo.setClassCode(dataMap.get("WorkersCompensation_RateClass_ClassificationCode_" + rowIdentifier));
+			ratingInfo.setDescriptionCode(dataMap.get("WorkersCompensation_RateClass_DescriptionCode_" + rowIdentifier));
+			ratingInfo.setCategories(dataMap.get("WorkersCompensation_RateClass_DutiesDescription_" + rowIdentifier));
+			ratingInfo.setFullTimeEmployees(DataHelper.parseInt(dataMap.get("WorkersCompensation_RateClass_FullTimeEmployeeCount_" + rowIdentifier)));
+			ratingInfo.setPartTimeEmployees(DataHelper.parseInt(dataMap.get("WorkersCompensation_RateClass_PartTimeEmployeeCount_" + rowIdentifier)));
+			ratingInfo.setSic(dataMap.get("WorkersCompensation_RateClass_SICCode_" + rowIdentifier));
+			ratingInfo.setNaics(dataMap.get("WorkersCompensation_RateClass_NAICSCode_" + rowIdentifier));
+			ratingInfo.setAnnualRemunerationPayroll(dataMap.get("WorkersCompensation_RateClass_RemunerationAmount_" + rowIdentifier));
+			ratingInfo.setRate(dataMap.get("WorkersCompensation_RateClass_Rate_" + rowIdentifier));
+			ratingInfo.setAnnualManualPremium(dataMap.get("WorkersCompensation_RateClass_EstimatedManualPremiumAmount_" + rowIdentifier));
+			
+			stateRatingInfo.add(ratingInfo);
+		}
+		
+		return stateRatingInfo;
+	}
+	
+	private static Premium buildPremium(Map<String, String> dataMap) {
+		Premium premium = new Premium();
+		
+		return premium;
 	}
 }

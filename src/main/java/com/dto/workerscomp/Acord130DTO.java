@@ -13,6 +13,8 @@ public class Acord130DTO {
 	private Policy policy;
 	private List<ContactInfo> contactInfo;
 	private List<IncludedExcluded> includedExcluded;
+	private List<StateRatingInfo> stateRatingInfo;
+	private Premium premium;
 
 	public String getCompletionDate() {
 		return completionDate;
@@ -84,6 +86,22 @@ public class Acord130DTO {
 
 	public void setIncludedExcluded(List<IncludedExcluded> includedExcluded) {
 		this.includedExcluded = includedExcluded;
+	}
+
+	public List<StateRatingInfo> getStateRatingInfo() {
+		return stateRatingInfo;
+	}
+
+	public void setStateRatingInfo(List<StateRatingInfo> stateRatingInfo) {
+		this.stateRatingInfo = stateRatingInfo;
+	}
+
+	public Premium getPremium() {
+		return premium;
+	}
+
+	public void setPremium(Premium premium) {
+		this.premium = premium;
 	}
 
 }
