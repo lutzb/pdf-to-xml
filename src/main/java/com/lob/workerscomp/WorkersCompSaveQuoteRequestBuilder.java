@@ -1,10 +1,10 @@
-package com.workerscomp.savequote;
+package com.lob.workerscomp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.dto.workerscomp.Acord130DTO;
+import com.dto.workerscomp.WorkersCompApplicationDTO;
 import com.nationwide.dto.savequote.request.AccountContact;
 import com.nationwide.dto.savequote.request.Address;
 import com.nationwide.dto.savequote.request.ClassCode;
@@ -37,25 +37,23 @@ import com.nationwide.dto.savequote.request.WC7AvailableCoveragesDTO;
 import com.nationwide.dto.savequote.request.WC7ClassificationsDTO;
 import com.nationwide.dto.savequote.request.WC7WorkersComp;
 
-public class SaveQuoteRequestBuilder {
+public class WorkersCompSaveQuoteRequestBuilder {
 	
-	// The big salami.  The great bambino.  The whole project.
-	public static SaveQuoteRequestDTO buildRequest(Acord130DTO dataDTO) {
+	public static SaveQuoteRequestDTO buildRequest(WorkersCompApplicationDTO dataDTO, String accountNumber) {
 		SaveQuoteRequestDTO request = new SaveQuoteRequestDTO();
 
 		Params params = new Params();
 		params.setPeriodStart(buildPeriodStart(dataDTO));
-		params.setCreateSubmissionReqDTO(buildCreateSubmissionReqDTO(dataDTO));
+		params.setCreateSubmissionReqDTO(buildCreateSubmissionReqDTO(dataDTO, accountNumber));
 		params.setLossInfoDTO(buildLossInfoDTO(dataDTO));
 		params.setWC7ClassificationsDTO(buildClassificationsDTO(dataDTO));
 		params.setWC7AvailableCoveragesDTO(buildAvailableCoveragesDTO(dataDTO));
-		
 		request.setParams(Arrays.asList(params));
 		
 		return request;
 	}
 
-	protected static PeriodStart buildPeriodStart(Acord130DTO dataDTO) {
+	protected static PeriodStart buildPeriodStart(WorkersCompApplicationDTO dataDTO) {
 		PeriodStart periodStart = new PeriodStart();
 		String[] effectDateData = dataDTO.getPolicy().getPropEffectiveDate().split("/");
 		
@@ -66,15 +64,17 @@ public class SaveQuoteRequestBuilder {
 		return periodStart;
 	}
 
-	protected static CreateSubmissionReqDTO buildCreateSubmissionReqDTO(Acord130DTO dataDTO) {
+	protected static CreateSubmissionReqDTO buildCreateSubmissionReqDTO(WorkersCompApplicationDTO dataDTO, String accountNumber) {
 		CreateSubmissionReqDTO createSubmissionReqDTO = new CreateSubmissionReqDTO();
-		createSubmissionReqDTO.setAccountNumber("ACP     3203082752");
+		createSubmissionReqDTO.setAccountNumber(accountNumber);
 		return createSubmissionReqDTO;
 	}
 
-	protected static LossInfoDTO buildLossInfoDTO(Acord130DTO dataDTO) {
+	protected static LossInfoDTO buildLossInfoDTO(WorkersCompApplicationDTO dataDTO) {
 		LossInfoDTO lossInfoDTO = new LossInfoDTO();
 		Lobs lobs = new Lobs();
+		
+		// Dynamic data implementation blocked due to business decision (5/23/18)
 		WC7WorkersComp wC7WorkersComp = new WC7WorkersComp();
 		wC7WorkersComp.setPriorLossesExist(true);
 		wC7WorkersComp.setNumLossesInPriorYear(0);
@@ -87,7 +87,7 @@ public class SaveQuoteRequestBuilder {
 		return lossInfoDTO;
 	}
 
-	protected static List<WC7ClassificationsDTO> buildClassificationsDTO(Acord130DTO dataDTO) {
+	protected static List<WC7ClassificationsDTO> buildClassificationsDTO(WorkersCompApplicationDTO dataDTO) {
 		WC7ClassificationsDTO wC7ClassificationsDTO = new WC7ClassificationsDTO();
 		wC7ClassificationsDTO.setState("NC");
 		
@@ -132,7 +132,7 @@ public class SaveQuoteRequestBuilder {
 		return Arrays.asList(wC7ClassificationsDTO);
 	}
 	
-	protected static WC7AvailableCoveragesDTO buildAvailableCoveragesDTO(Acord130DTO dataDTO) {
+	protected static WC7AvailableCoveragesDTO buildAvailableCoveragesDTO(WorkersCompApplicationDTO dataDTO) {
 		WC7AvailableCoveragesDTO wC7AvailableCoveragesDTO = new WC7AvailableCoveragesDTO();
 		
 		wC7AvailableCoveragesDTO.setLineCoverages(buildLineCoverages());

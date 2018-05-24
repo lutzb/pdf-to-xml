@@ -4,22 +4,22 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.dto.workerscomp.Acord130DTO;
+import com.dto.workerscomp.WorkersCompApplicationDTO;
+import com.lob.workerscomp.WorkersCompSaveQuoteRequestBuilder;
 import com.dto.workerscomp.Policy;
 import com.nationwide.dto.savequote.request.PeriodStart;
 import com.nationwide.dto.savequote.request.SaveQuoteRequestDTO;
-import com.workerscomp.savequote.SaveQuoteRequestBuilder;
 
 public class SaveQuoteRequestBuilderTest {
 	
 	@Test
-	public void whenBuildRequestIsGivenAnAcord130DTOItReturnsARequestDTOWithPeriodStartFilledIn() {
-		Acord130DTO testData = new Acord130DTO();
+	public void whenBuildRequestIsGivenAWorkersCompApplicationDTOItReturnsARequestDTOWithPeriodStartFilledIn() {
+		WorkersCompApplicationDTO testData = new WorkersCompApplicationDTO();
 		Policy policy = new Policy();
 		policy.setPropEffectiveDate("1/23/2018");
 		testData.setPolicy(policy);
 		
-		SaveQuoteRequestDTO requestDTO = SaveQuoteRequestBuilder.buildRequest(testData);
+		SaveQuoteRequestDTO requestDTO = WorkersCompSaveQuoteRequestBuilder.buildRequest(testData, "accountNumber");
 		PeriodStart actual = requestDTO.getParams().get(0).getPeriodStart();
 		
 		assertEquals(2018, actual.getYear());

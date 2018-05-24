@@ -1,4 +1,4 @@
-package com.shared.util;
+package com.lob.workerscomp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.dto.workerscomp.Acord130DTO;
+import com.dto.workerscomp.WorkersCompApplicationDTO;
 import com.dto.workerscomp.Address;
 import com.dto.workerscomp.BillingAuditInfo;
 import com.dto.workerscomp.CommercialBusiness;
@@ -22,34 +22,35 @@ import com.dto.workerscomp.PriorCarrierLossInfo;
 import com.dto.workerscomp.Producer;
 import com.dto.workerscomp.StateRatingInfo;
 import com.dto.workerscomp.SubmissionStatus;
+import com.shared.util.DataHelper;
 
-public class PDFToDTOMapper {
+public class WorkersCompDataMapper {
 
-	public static Acord130DTO mapDataToDTO(Document doc) {
+	public static WorkersCompApplicationDTO mapAcord130ToDTO(Document doc) {
 		Map<String, String> dataMap = parseXMLDoc(doc);
 		
 		// From the key-value map of data, lets build a DTO that makes sense and aligns with the PDF itself.
-		Acord130DTO result = new Acord130DTO();
-		result.setCompletionDate(dataMap.get("Form_CompletionDate_A"));
-		result.setProducer(buildProducer(dataMap));
-		result.setNamedInsured(buildCommercialBusiness(dataMap));
-		result.setStatusOfSubmission(buildSubmissionStatus(dataMap));
-		result.setBillingAuditInfo(buildBillingAuditInfo(dataMap));
-		result.setLocations(buildLocations(dataMap));
-		result.setPolicy(buildPolicy(dataMap));
-		result.setContactInfo(buildContactInfo(dataMap));
-		result.setIncludedExcluded(buildIncludedExcludedAlphabet(dataMap));
-		result.setStateRatingInfo(buildStateRatingInfo(dataMap));
-		result.setPremium(buildPremium(dataMap));
-		result.setRemarkText(dataMap.get("WorkersCompensation_RateState_RemarkText_A"));
-		result.setPriorCarrierLossInfo(buildPriorCarrierLossInfo(dataMap));
-		result.setBusinessOperationsDescription(dataMap.get("CommercialPolicy_OperationsDescription_A"));
+		WorkersCompApplicationDTO resultDTO = new WorkersCompApplicationDTO();
+		resultDTO.setCompletionDate(dataMap.get("Form_CompletionDate_A"));
+		resultDTO.setProducer(buildProducer(dataMap));
+		resultDTO.setNamedInsured(buildCommercialBusiness(dataMap));
+		resultDTO.setStatusOfSubmission(buildSubmissionStatus(dataMap));
+		resultDTO.setBillingAuditInfo(buildBillingAuditInfo(dataMap));
+		resultDTO.setLocations(buildLocations(dataMap));
+		resultDTO.setPolicy(buildPolicy(dataMap));
+		resultDTO.setContactInfo(buildContactInfo(dataMap));
+		resultDTO.setIncludedExcluded(buildIncludedExcludedAlphabet(dataMap));
+		resultDTO.setStateRatingInfo(buildStateRatingInfo(dataMap));
+		resultDTO.setPremium(buildPremium(dataMap));
+		resultDTO.setRemarkText(dataMap.get("WorkersCompensation_RateState_RemarkText_A"));
+		resultDTO.setPriorCarrierLossInfo(buildPriorCarrierLossInfo(dataMap));
+		resultDTO.setBusinessOperationsDescription(dataMap.get("CommercialPolicy_OperationsDescription_A"));
 		
-		return result;
+		return resultDTO;
 	}
 
 	// The purpose of this method is to take the raw XML data from the PDF and return a key-value map 
-	//  that is easier to work with.  To view the raw XML data, check /ExampleData/accord-130-data.xml
+	//  that is easier to work with.  To view the raw XML data, check /ExampleData/acord-130.xml
 	private static Map<String, String> parseXMLDoc(Document doc) {
 		Map<String, String> dataMap = new HashMap<String, String>();
 		

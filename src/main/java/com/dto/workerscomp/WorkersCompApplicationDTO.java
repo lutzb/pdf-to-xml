@@ -2,7 +2,7 @@ package com.dto.workerscomp;
 
 import java.util.List;
 
-public class Acord130DTO {
+public class WorkersCompApplicationDTO {
 
 	private String completionDate;
 	private Producer producer;

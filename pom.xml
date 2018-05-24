@@ -23,13 +23,20 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.7</version>
+		</dependency>
+
+		<!-- Itext is used to pull the raw XML data from the PDF -->
+		<dependency>
 			<groupId>com.itextpdf</groupId>
 			<artifactId>itext7-core</artifactId>
 			<version>7.0.5</version>
 			<type>pom</type>
 		</dependency>
 
-		<!-- SLF4J jars to supress warnings -->
+		<!-- SLF4J jars to suppress warnings -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -68,6 +75,7 @@
 			<version>2.9.4</version>
 		</dependency>
 
+		<!-- Local quote client jar to interact with services (AKA subin.jar) -->
 		<dependency>
 			<groupId>com.nationwide.shared</groupId>
 			<artifactId>CommercialQuoteClient</artifactId>
