@@ -1,9 +1,18 @@
 package com.lob.workerscomp;
 
+import static java.lang.Integer.parseInt;
+import static  java.util.Arrays.asList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.dto.workerscomp.PriorCarrierLossInfo;
+import com.dto.workerscomp.StateRatingInfo;
+import com.dto.workerscomp.WorkersCompAddress;
 import com.dto.workerscomp.WorkersCompApplicationDTO;
 import com.nationwide.dto.savequote.request.AccountContact;
 import com.nationwide.dto.savequote.request.Address;
@@ -48,7 +57,7 @@ public class WorkersCompSaveQuoteRequestBuilder {
 		params.setLossInfoDTO(buildLossInfoDTO(dataDTO));
 		params.setWC7ClassificationsDTO(buildClassificationsDTO(dataDTO));
 		params.setWC7AvailableCoveragesDTO(buildAvailableCoveragesDTO(dataDTO));
-		request.setParams(Arrays.asList(params));
+		request.setParams(asList(params));
 		
 		return request;
 	}
@@ -57,9 +66,9 @@ public class WorkersCompSaveQuoteRequestBuilder {
 		PeriodStart periodStart = new PeriodStart();
 		String[] effectDateData = dataDTO.getPolicy().getPropEffectiveDate().split("/");
 		
-		periodStart.setYear(Integer.parseInt(effectDateData[2]));
-		periodStart.setMonth(Integer.parseInt(effectDateData[0]));
-		periodStart.setDay(Integer.parseInt(effectDateData[1]));
+		periodStart.setYear(parseInt(effectDateData[2]));
+		periodStart.setMonth(parseInt(effectDateData[0]));
+		periodStart.setDay(parseInt(effectDateData[1]));
 		
 		return periodStart;
 	}
@@ -73,13 +82,22 @@ public class WorkersCompSaveQuoteRequestBuilder {
 	protected static LossInfoDTO buildLossInfoDTO(WorkersCompApplicationDTO dataDTO) {
 		LossInfoDTO lossInfoDTO = new LossInfoDTO();
 		Lobs lobs = new Lobs();
-		
-		// Dynamic data implementation blocked due to business decision (5/23/18)
 		WC7WorkersComp wC7WorkersComp = new WC7WorkersComp();
-		wC7WorkersComp.setPriorLossesExist(true);
-		wC7WorkersComp.setNumLossesInPriorYear(0);
-		wC7WorkersComp.setNumLossesInYear2(0);
-		wC7WorkersComp.setNumLossesInYear3(0);
+
+		if (dataDTO.getPriorCarrierLossInfo().size() > 0) {
+			List<PriorCarrierLossInfo> priorCarrierLosses = dataDTO.getPriorCarrierLossInfo();
+			Calendar now = Calendar.getInstance();
+			int currentYear = now.get(Calendar.YEAR);
+			
+			Map<String, Integer> numberOfLossesMap = getLossCounts(priorCarrierLosses, currentYear);
+			
+			wC7WorkersComp.setPriorLossesExist(true);
+			wC7WorkersComp.setNumLossesInPriorYear(numberOfLossesMap.get(String.valueOf(currentYear)));
+			wC7WorkersComp.setNumLossesInYear2(numberOfLossesMap.get(String.valueOf(currentYear - 1)));
+			wC7WorkersComp.setNumLossesInYear3(numberOfLossesMap.get(String.valueOf(currentYear - 2)));
+		} else {
+			wC7WorkersComp.setPriorLossesExist(false);
+		}
 		
 		lobs.setWC7WorkersComp(wC7WorkersComp);
 		lossInfoDTO.setLobs(lobs);
@@ -87,47 +105,74 @@ public class WorkersCompSaveQuoteRequestBuilder {
 		return lossInfoDTO;
 	}
 
+	private static Map<String, Integer> getLossCounts(List<PriorCarrierLossInfo> priorCarrierLosses, int currentYear) {
+		Map<String, Integer> result = new HashMap<String, Integer>();
+		
+		result.put(String.valueOf(currentYear), 0);
+		result.put(String.valueOf(currentYear - 1), 0);
+		result.put(String.valueOf(currentYear - 2), 0);
+		
+		for (PriorCarrierLossInfo priorCarrierLoss : priorCarrierLosses) {
+			String priorCarrierYear = priorCarrierLoss.getYear();
+			if (!result.containsKey(priorCarrierYear)) {
+				result.put(priorCarrierYear, priorCarrierLoss.getClaimCount());
+			} else {
+				result.put(priorCarrierYear, result.get(priorCarrierYear) + priorCarrierLoss.getClaimCount());
+			}
+		}
+		
+		return result;
+	}
+
 	protected static List<WC7ClassificationsDTO> buildClassificationsDTO(WorkersCompApplicationDTO dataDTO) {
 		WC7ClassificationsDTO wC7ClassificationsDTO = new WC7ClassificationsDTO();
-		wC7ClassificationsDTO.setState("NC");
+		wC7ClassificationsDTO.setState(dataDTO.getNamedInsured().getMailingAddress().getStateOrProvinceCode());
 		
-		CoveredEmployee coveredEmployee = new CoveredEmployee();
-		coveredEmployee.setBasisAmount("12000");
-		coveredEmployee.setIfAnyExposure(true);
-		coveredEmployee.setState("NC");
+		List<CoveredEmployee> coveredEmployees = new ArrayList<CoveredEmployee>();
 		
-		ClassCode classCode = new ClassCode();
-		classCode.setPublicID("zv4iejd065rlpci828shj377d6b");
-		classCode.setClassification("Barber Or Beauty Parlor Supply Houses");
-		classCode.setCode("8018");
-		classCode.setShortDesc("Barber Or Beauty Parlor Supply Houses");
-		classCode.setJurisdiction("NC");
-		coveredEmployee.setClassCode(classCode);
+		for (StateRatingInfo stateRatingInfo : dataDTO.getStateRatingInfo()) {
+			CoveredEmployee coveredEmployee = new CoveredEmployee();
+			WorkersCompAddress stateRatingAddress = dataDTO.getLocations().get(stateRatingInfo.getLocationNumber()).getAddress();
+			
+			coveredEmployee.setBasisAmount(stateRatingInfo.getAnnualRemunerationPayroll());
+			coveredEmployee.setIfAnyExposure(true); // Temporarily hard-coded; Not sure where to pull this from
+			coveredEmployee.setState(stateRatingAddress.getStateOrProvinceCode());
+			
+			// TODO Get this from Commercial Classification service??? 
+			ClassCode classCode = new ClassCode();
+			classCode.setPublicID("zv4iejd065rlpci828shj377d6b");
+			classCode.setClassification("Barber Or Beauty Parlor Supply Houses");
+			classCode.setCode("8018");
+			classCode.setShortDesc("Barber Or Beauty Parlor Supply Houses");
+			classCode.setJurisdiction("NC");
+			coveredEmployee.setClassCode(classCode);
 		
-		EffectiveDate effectiveDate = new EffectiveDate();
-		String[] effectDateData = dataDTO.getPolicy().getPropEffectiveDate().split("/");
+			EffectiveDate effectiveDate = new EffectiveDate();
+			String[] effectDateData = dataDTO.getPolicy().getPropEffectiveDate().split("/");
+			
+			effectiveDate.setYear(parseInt(effectDateData[2]));
+			effectiveDate.setMonth(parseInt(effectDateData[0]));
+			effectiveDate.setDay(parseInt(effectDateData[1]));
+			coveredEmployee.setEffectiveDate(effectiveDate);
+			
+			Location location = new Location();
+			Address address = new Address();
+			address.setAddressLine1(stateRatingAddress.getLineOne());
+ 			address.setCity(stateRatingAddress.getCity());
+			address.setState(stateRatingAddress.getStateOrProvinceCode());
+			address.setPostalCode(stateRatingAddress.getPostalCode());
+			address.setCounty("");  // TODO Maybe get this from address standardization service?
+			location.setAddress(address);
+			
+			coveredEmployee.setLocation(location);
+			coveredEmployee.setbCDCode("16755"); // Temporarily hard-coded; Not sure where to pull this from
+			coveredEmployee.setProhibitedClassInd(false);  // Temporarily hard-coded; Not sure where to pull this from
+			coveredEmployee.setbCDescription("Barber or Beauty Parlor Supply House");  // Temporarily hard-coded; Not sure where to pull this from
+			
+			coveredEmployees.add(coveredEmployee);
+		}
 		
-		effectiveDate.setYear(Integer.parseInt(effectDateData[2]));
-		effectiveDate.setMonth(Integer.parseInt(effectDateData[0]));
-		effectiveDate.setDay(Integer.parseInt(effectDateData[1]));
-		coveredEmployee.setEffectiveDate(effectiveDate);
-		
-		Location location = new Location();
-		
-		Address address = new Address();
-		address.setAddressLine1("7735 N TRYON ST");
-		address.setCity("Charlotte");
-		address.setState("NC");
-		address.setPostalCode("28262");
-		address.setCounty("Mecklenburg");
-		location.setAddress(address);
-		
-		coveredEmployee.setLocation(location);
-		coveredEmployee.setbCDCode("16755");
-		coveredEmployee.setProhibitedClassInd(false);
-		coveredEmployee.setbCDescription("Barber or Beauty Parlor Supply House");
-		
-		wC7ClassificationsDTO.setCoveredEmployee(Arrays.asList(coveredEmployee));
+		wC7ClassificationsDTO.setCoveredEmployee(coveredEmployees);
 		
 		return Arrays.asList(wC7ClassificationsDTO);
 	}
@@ -135,7 +180,7 @@ public class WorkersCompSaveQuoteRequestBuilder {
 	protected static WC7AvailableCoveragesDTO buildAvailableCoveragesDTO(WorkersCompApplicationDTO dataDTO) {
 		WC7AvailableCoveragesDTO wC7AvailableCoveragesDTO = new WC7AvailableCoveragesDTO();
 		
-		wC7AvailableCoveragesDTO.setLineCoverages(buildLineCoverages());
+		wC7AvailableCoveragesDTO.setLineCoverages(buildLineCoverages(dataDTO));
 		wC7AvailableCoveragesDTO.setStateCoverages(buildStateCoverages());
 		wC7AvailableCoveragesDTO.setLineConditions(buildLineConditions());
 		wC7AvailableCoveragesDTO.setLineExclusions(buildLineExclusions());
@@ -144,36 +189,37 @@ public class WorkersCompSaveQuoteRequestBuilder {
 		return wC7AvailableCoveragesDTO;
 	}
 
-	protected static List<LineCoverages> buildLineCoverages() {
+	protected static List<LineCoverages> buildLineCoverages(WorkersCompApplicationDTO dataDTO) {
 		LineCoverages lineCoverages = new LineCoverages();
-		lineCoverages.setName("Workers' Compensation And Employers' Liability Insurance Policy (Section 3B)");
-		lineCoverages.setUpdated(true);
+		lineCoverages.setName("Workers' Compensation And Employers' Liability Insurance Policy (Section 3B)");  // Intentionally hard coded
+		lineCoverages.setUpdated(true);  // Intentionally hard coded
+		
 		List<Terms> terms = new ArrayList<Terms>();
 		
 		Terms term1 = new Terms();
-		term1.setName("Policy Limit - Disease");
-		term1.setPatternCode("WC7EmpLiabPolicyLimit");
-		term1.setChosenTerm("ztfgento0qocffr04r8foj3r0e9");
-		term1.setChosenTermValue("1,000,000");
-		term1.setUpdated(true);
-		term1.setReadOnly(false);
+		term1.setName("Policy Limit - Disease");  // Intentionally hard coded
+		term1.setPatternCode("WC7EmpLiabPolicyLimit");  // Intentionally hard coded
+		term1.setChosenTerm("ztfgento0qocffr04r8foj3r0e9");  // Intentionally hard coded
+		term1.setChosenTermValue(dataDTO.getPolicy().getEmployerLiabilityDiseasePolicy());
+		term1.setUpdated(true);  // Intentionally hard coded
+		term1.setReadOnly(false);  // Intentionally hard coded
 		
 		Terms term2 = new Terms();
-		term2.setName("Limit - per Accident / per Employee Disease");
-		term2.setPatternCode("WC7EmpLiabLimit");
-		term2.setChosenTerm("zvoi41mr4ftoi35sb0rbqkc27ca");
-		term2.setChosenTermValue("400,000/400,000");
-		term2.setUpdated(true);
-		term2.setReadOnly(false);
+		term2.setName("Limit - per Accident / per Employee Disease");  // Intentionally hard coded
+		term2.setPatternCode("WC7EmpLiabLimit");  // Intentionally hard coded
+		term2.setChosenTerm("zvoi41mr4ftoi35sb0rbqkc27ca");  // Intentionally hard coded
+		term2.setChosenTermValue(dataDTO.getPolicy().getEmployerLiabilityEachAccident() + "/" + dataDTO.getPolicy().getEmployerLiabilityDiseaseEachEmployee());
+		term2.setUpdated(true);  // Intentionally hard coded
+		term2.setReadOnly(false);  // Intentionally hard coded
 		
 		terms.add(term1);
 		terms.add(term2);
 		lineCoverages.setTerms(terms);
 		
-		lineCoverages.setSelected(true);
-		lineCoverages.setPublicID("WC7WorkersCompEmpLiabInsurancePolicyACov");
-		lineCoverages.setCoverageCategoryCode("WC7WorkCompLineCategory");
-		lineCoverages.setCoverageCategoryDisplayName("Workers' Compensation Line Coverages");
+		lineCoverages.setSelected(true);  // Intentionally hard coded
+		lineCoverages.setPublicID("WC7WorkersCompEmpLiabInsurancePolicyACov");  // Intentionally hard coded
+		lineCoverages.setCoverageCategoryCode("WC7WorkCompLineCategory");  // Intentionally hard coded
+		lineCoverages.setCoverageCategoryDisplayName("Workers' Compensation Line Coverages");  // Intentionally hard coded
 		
 		return Arrays.asList(lineCoverages);
 	}

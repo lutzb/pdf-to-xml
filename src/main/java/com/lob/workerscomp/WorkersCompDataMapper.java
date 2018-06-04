@@ -10,13 +10,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.dto.workerscomp.WorkersCompApplicationDTO;
-import com.dto.workerscomp.Address;
+import com.dto.workerscomp.WorkersCompAddress;
 import com.dto.workerscomp.BillingAuditInfo;
 import com.dto.workerscomp.CommercialBusiness;
 import com.dto.workerscomp.ContactInfo;
 import com.dto.workerscomp.IncludedExcluded;
-import com.dto.workerscomp.Location;
-import com.dto.workerscomp.Policy;
+import com.dto.workerscomp.WorkersCompLocation;
+import com.dto.workerscomp.WorkersCompPolicy;
 import com.dto.workerscomp.Premium;
 import com.dto.workerscomp.PriorCarrierLossInfo;
 import com.dto.workerscomp.Producer;
@@ -71,7 +71,7 @@ public class WorkersCompDataMapper {
 		Producer producer = new Producer();
 		producer.setFullName(dataMap.get("Producer_FullName_A"));
 
-		Address mailingAddress = new Address();
+		WorkersCompAddress mailingAddress = new WorkersCompAddress();
 		mailingAddress.setLineOne(dataMap.get("Producer_MailingAddress_LineOne_A"));
 		mailingAddress.setCity(dataMap.get("Producer_MailingAddress_CityName_A"));
 		mailingAddress.setStateOrProvinceCode(dataMap.get("Producer_MailingAddress_StateOrProvinceCode_A"));
@@ -98,7 +98,7 @@ public class WorkersCompDataMapper {
 		commercialBusiness.setOfficePhone(dataMap.get("NamedInsured_Primary_PhoneNumber_A"));
 		commercialBusiness.setMobilePhone(dataMap.get("NamedInsured_Secondary_PhoneNumber_A"));
 		
-		Address mailingAddress = new Address();
+		WorkersCompAddress mailingAddress = new WorkersCompAddress();
 		mailingAddress.setLineOne(dataMap.get("NamedInsured_MailingAddress_LineOne_A"));
 		mailingAddress.setLineTwo(dataMap.get("NamedInsured_MailingAddress_LineTwo_A"));
 		mailingAddress.setCity(dataMap.get("NamedInsured_MailingAddress_CityName_A"));
@@ -154,32 +154,31 @@ public class WorkersCompDataMapper {
 		return billingAuditInfo;
 	}
 
-	private static List<Location> buildLocations(Map<String, String> dataMap) {
-		List<Location> locations = new ArrayList<Location>();
+	private static Map<Integer, WorkersCompLocation> buildLocations(Map<String, String> dataMap) {
+		Map<Integer, WorkersCompLocation> locations = new HashMap<Integer, WorkersCompLocation>();
 		List<String> rowIdentifiers = new ArrayList<String>();
 		rowIdentifiers.add("A");
 		rowIdentifiers.add("B");
 		rowIdentifiers.add("C");
 		
 		for (String rowIdentifier : rowIdentifiers) {
-			Location location = new Location();
-			location.setLocationNumber(DataHelper.parseInt(dataMap.get("Location_ProducerIdentifier_" + rowIdentifier)));
+			WorkersCompLocation location = new WorkersCompLocation();
 			location.setHighestFloor(dataMap.get("Location_HighestFloorCount_" + rowIdentifier));
 			
-			Address locationAddress = new Address();
+			WorkersCompAddress locationAddress = new WorkersCompAddress();
 			locationAddress.setLineOne(dataMap.get("Location_PhysicalAddress_LineOne_" + rowIdentifier));
 			locationAddress.setCity(dataMap.get("Location_PhysicalAddress_CityName_" + rowIdentifier));
 			locationAddress.setStateOrProvinceCode(dataMap.get("Location_PhysicalAddress_StateOrProvinceCode_" + rowIdentifier));
 			locationAddress.setPostalCode(dataMap.get("Location_PhysicalAddress_PostalCode_" + rowIdentifier));
-			
-			locations.add(location);
+			location.setAddress(locationAddress);
+			locations.put(DataHelper.parseInt(dataMap.get("Location_ProducerIdentifier_" + rowIdentifier)), location);
 		}
 
 		return locations;
 	}
 
-	private static Policy buildPolicy(Map<String, String> dataMap) {
-		Policy policy = new Policy();
+	private static WorkersCompPolicy buildPolicy(Map<String, String> dataMap) {
+		WorkersCompPolicy policy = new WorkersCompPolicy();
 
 		policy.setPropEffectiveDate(dataMap.get("Policy_EffectiveDate_A"));
 		policy.setPropExpirationDate(dataMap.get("Policy_ExpirationDate_A"));

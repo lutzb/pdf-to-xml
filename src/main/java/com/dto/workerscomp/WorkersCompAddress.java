@@ -1,6 +1,6 @@
 package com.dto.workerscomp;
 
-public class Address {
+public class WorkersCompAddress {
 	
 	private String lineOne;
 	private String lineTwo;

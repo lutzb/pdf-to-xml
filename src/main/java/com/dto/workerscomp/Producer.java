@@ -3,7 +3,7 @@ package com.dto.workerscomp;
 public class Producer {
 
 	private String fullName;
-	private Address mailingAddress;
+	private WorkersCompAddress mailingAddress;
 	private String producerName;
 	private String csrName;
 	private String officePhone;
@@ -22,11 +22,11 @@ public class Producer {
 		this.fullName = fullName;
 	}
 
-	public Address getMailingAddress() {
+	public WorkersCompAddress getMailingAddress() {
 		return mailingAddress;
 	}
 
-	public void setMailingAddress(Address mailingAddress) {
+	public void setMailingAddress(WorkersCompAddress mailingAddress) {
 		this.mailingAddress = mailingAddress;
 	}
 

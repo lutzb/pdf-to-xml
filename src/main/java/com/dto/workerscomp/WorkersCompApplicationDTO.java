@@ -1,6 +1,7 @@
 package com.dto.workerscomp;
 
 import java.util.List;
+import java.util.Map;
 
 public class WorkersCompApplicationDTO {
 
@@ -9,8 +10,8 @@ public class WorkersCompApplicationDTO {
 	private CommercialBusiness namedInsured;
 	private SubmissionStatus statusOfSubmission;
 	private BillingAuditInfo billingAuditInfo;
-	private List<Location> locations;
-	private Policy policy;
+	private Map<Integer, WorkersCompLocation> locations;
+	private WorkersCompPolicy policy;
 	private List<ContactInfo> contactInfo;
 	private List<IncludedExcluded> includedExcluded;
 	private List<StateRatingInfo> stateRatingInfo;
@@ -60,19 +61,19 @@ public class WorkersCompApplicationDTO {
 		this.billingAuditInfo = billingAuditInfo;
 	}
 
-	public List<Location> getLocations() {
+	public Map<Integer, WorkersCompLocation> getLocations() {
 		return locations;
 	}
 
-	public void setLocations(List<Location> locations) {
+	public void setLocations(Map<Integer, WorkersCompLocation> locations) {
 		this.locations = locations;
 	}
 	
-	public Policy getPolicy() {
+	public WorkersCompPolicy getPolicy() {
 		return policy;
 	}
 
-	public void setPolicy(Policy policy) {
+	public void setPolicy(WorkersCompPolicy policy) {
 		this.policy = policy;
 	}
 

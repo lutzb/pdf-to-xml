@@ -7,7 +7,7 @@ public class CommercialBusiness {
 	private String applicantName;
 	private String officePhone;
 	private String mobilePhone;
-	private Address mailingAddress;
+	private WorkersCompAddress mailingAddress;
 	private int yrsInBusiness;
 	private String sicCode;
 	private String naicsCode;
@@ -68,11 +68,11 @@ public class CommercialBusiness {
 		this.mobilePhone = mobilePhone;
 	}
 
-	public Address getMailingAddress() {
+	public WorkersCompAddress getMailingAddress() {
 		return mailingAddress;
 	}
 
-	public void setMailingAddress(Address mailingAddress) {
+	public void setMailingAddress(WorkersCompAddress mailingAddress) {
 		this.mailingAddress = mailingAddress;
 	}
 

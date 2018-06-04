@@ -23,7 +23,7 @@ public class WorkersCompAcord130SaveQuote {
 	public static void main(String[] args) throws IOException, TransformerException {
 		System.out.println("Hello there.. sir.");
 		
-		InputStream inputStream = WorkersCompAcord130SaveQuote.class.getResourceAsStream("/POC_Demo_AR.pdf");
+		InputStream inputStream = WorkersCompAcord130SaveQuote.class.getResourceAsStream("/acord-130.pdf");
 		PdfDocument pdf = new PdfDocument(new PdfReader(inputStream));
 		PdfAcroForm form = PdfAcroForm.getAcroForm(pdf, true);
 		XfaForm xfa = form.getXfaForm();

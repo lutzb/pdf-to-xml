@@ -1,6 +1,6 @@
 package com.dto.workerscomp;
 
-public class Policy {
+public class WorkersCompPolicy {
 
 	private String propEffectiveDate;
 	private String propExpirationDate;
