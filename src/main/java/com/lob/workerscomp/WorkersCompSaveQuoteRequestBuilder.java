@@ -126,53 +126,93 @@ public class WorkersCompSaveQuoteRequestBuilder {
 
 	protected static List<WC7ClassificationsDTO> buildClassificationsDTO(WorkersCompApplicationDTO dataDTO) {
 		WC7ClassificationsDTO wC7ClassificationsDTO = new WC7ClassificationsDTO();
-		wC7ClassificationsDTO.setState(dataDTO.getNamedInsured().getMailingAddress().getStateOrProvinceCode());
+//		wC7ClassificationsDTO.setState(dataDTO.getNamedInsured().getMailingAddress().getStateOrProvinceCode());
+//		
+//		List<CoveredEmployee> coveredEmployees = new ArrayList<CoveredEmployee>();
+//		
+//		for (StateRatingInfo stateRatingInfo : dataDTO.getStateRatingInfo()) {
+//			CoveredEmployee coveredEmployee = new CoveredEmployee();
+//			WorkersCompAddress stateRatingAddress = dataDTO.getLocations().get(stateRatingInfo.getLocationNumber()).getAddress();
+//			
+//			coveredEmployee.setBasisAmount(stateRatingInfo.getAnnualRemunerationPayroll());
+//			coveredEmployee.setIfAnyExposure(true); // Temporarily hard-coded; Not sure where to pull this from
+//			coveredEmployee.setState(stateRatingAddress.getStateOrProvinceCode());
+//			
+//			// TODO Get this from Commercial Classification service??? 
+//			ClassCode classCode = new ClassCode();
+//			classCode.setPublicID("zv4iejd065rlpci828shj377d6b");
+//			classCode.setClassification("Barber Or Beauty Parlor Supply Houses");
+//			classCode.setCode("8018");
+//			classCode.setShortDesc("Barber Or Beauty Parlor Supply Houses");
+//			classCode.setJurisdiction("NC");
+//			coveredEmployee.setClassCode(classCode);
+//		
+//			EffectiveDate effectiveDate = new EffectiveDate();
+//			String[] effectDateData = dataDTO.getPolicy().getPropEffectiveDate().split("/");
+//			
+//			effectiveDate.setYear(parseInt(effectDateData[2]));
+//			effectiveDate.setMonth(parseInt(effectDateData[0]));
+//			effectiveDate.setDay(parseInt(effectDateData[1]));
+//			coveredEmployee.setEffectiveDate(effectiveDate);
+//			
+//			Location location = new Location();
+//			Address address = new Address();
+//			address.setAddressLine1(stateRatingAddress.getLineOne());
+// 			address.setCity(stateRatingAddress.getCity());
+//			address.setState(stateRatingAddress.getStateOrProvinceCode());
+//			address.setPostalCode(stateRatingAddress.getPostalCode());
+//			address.setCounty("");  // TODO Maybe get this from address standardization service?
+//			location.setAddress(address);
+//			
+//			coveredEmployee.setLocation(location);
+//			coveredEmployee.setbCDCode("16755"); // Temporarily hard-coded; Not sure where to pull this from
+//			coveredEmployee.setProhibitedClassInd(false);  // Temporarily hard-coded; Not sure where to pull this from
+//			coveredEmployee.setbCDescription("Barber or Beauty Parlor Supply House");  // Temporarily hard-coded; Not sure where to pull this from
+//			
+//			coveredEmployees.add(coveredEmployee);
+//		}
+//		
+//		wC7ClassificationsDTO.setCoveredEmployee(coveredEmployees);
 		
-		List<CoveredEmployee> coveredEmployees = new ArrayList<CoveredEmployee>();
+		wC7ClassificationsDTO.setState("NC");
+				
+		CoveredEmployee coveredEmployee = new CoveredEmployee();
+		coveredEmployee.setBasisAmount("12000");
+		coveredEmployee.setIfAnyExposure(true);
+		coveredEmployee.setState("NC");
 		
-		for (StateRatingInfo stateRatingInfo : dataDTO.getStateRatingInfo()) {
-			CoveredEmployee coveredEmployee = new CoveredEmployee();
-			WorkersCompAddress stateRatingAddress = dataDTO.getLocations().get(stateRatingInfo.getLocationNumber()).getAddress();
-			
-			coveredEmployee.setBasisAmount(stateRatingInfo.getAnnualRemunerationPayroll());
-			coveredEmployee.setIfAnyExposure(true); // Temporarily hard-coded; Not sure where to pull this from
-			coveredEmployee.setState(stateRatingAddress.getStateOrProvinceCode());
-			
-			// TODO Get this from Commercial Classification service??? 
-			ClassCode classCode = new ClassCode();
-			classCode.setPublicID("zv4iejd065rlpci828shj377d6b");
-			classCode.setClassification("Barber Or Beauty Parlor Supply Houses");
-			classCode.setCode("8018");
-			classCode.setShortDesc("Barber Or Beauty Parlor Supply Houses");
-			classCode.setJurisdiction("NC");
-			coveredEmployee.setClassCode(classCode);
+		ClassCode classCode = new ClassCode();
+		classCode.setPublicID("zv4iejd065rlpci828shj377d6b");
+		classCode.setClassification("Barber Or Beauty Parlor Supply Houses");
+		classCode.setCode("8018");
+		classCode.setShortDesc("Barber Or Beauty Parlor Supply Houses");
+		classCode.setJurisdiction("NC");
+		coveredEmployee.setClassCode(classCode);
 		
-			EffectiveDate effectiveDate = new EffectiveDate();
-			String[] effectDateData = dataDTO.getPolicy().getPropEffectiveDate().split("/");
-			
-			effectiveDate.setYear(parseInt(effectDateData[2]));
-			effectiveDate.setMonth(parseInt(effectDateData[0]));
-			effectiveDate.setDay(parseInt(effectDateData[1]));
-			coveredEmployee.setEffectiveDate(effectiveDate);
-			
-			Location location = new Location();
-			Address address = new Address();
-			address.setAddressLine1(stateRatingAddress.getLineOne());
- 			address.setCity(stateRatingAddress.getCity());
-			address.setState(stateRatingAddress.getStateOrProvinceCode());
-			address.setPostalCode(stateRatingAddress.getPostalCode());
-			address.setCounty("");  // TODO Maybe get this from address standardization service?
-			location.setAddress(address);
-			
-			coveredEmployee.setLocation(location);
-			coveredEmployee.setbCDCode("16755"); // Temporarily hard-coded; Not sure where to pull this from
-			coveredEmployee.setProhibitedClassInd(false);  // Temporarily hard-coded; Not sure where to pull this from
-			coveredEmployee.setbCDescription("Barber or Beauty Parlor Supply House");  // Temporarily hard-coded; Not sure where to pull this from
-			
-			coveredEmployees.add(coveredEmployee);
-		}
+		EffectiveDate effectiveDate = new EffectiveDate();
+		String[] effectDateData = dataDTO.getPolicy().getPropEffectiveDate().split("/");
 		
-		wC7ClassificationsDTO.setCoveredEmployee(coveredEmployees);
+		effectiveDate.setYear(Integer.parseInt(effectDateData[2]));
+		effectiveDate.setMonth(Integer.parseInt(effectDateData[0]));
+		effectiveDate.setDay(Integer.parseInt(effectDateData[1]));
+		coveredEmployee.setEffectiveDate(effectiveDate);
+		
+		Location location = new Location();
+		
+		Address address = new Address();
+		address.setAddressLine1("7735 N TRYON ST");
+		address.setCity("Charlotte");
+		address.setState("NC");
+		address.setPostalCode("28262");
+		address.setCounty("Mecklenburg");
+		location.setAddress(address);
+		
+		coveredEmployee.setLocation(location);
+		coveredEmployee.setbCDCode("16755");
+		coveredEmployee.setProhibitedClassInd(false);
+		coveredEmployee.setbCDescription("Barber or Beauty Parlor Supply House");
+		
+		wC7ClassificationsDTO.setCoveredEmployee(Arrays.asList(coveredEmployee));
 		
 		return Arrays.asList(wC7ClassificationsDTO);
 	}
